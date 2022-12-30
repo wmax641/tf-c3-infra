@@ -11,7 +11,7 @@ terraform {
   }
 
   cloud {
-    organization = "org-m5BhVqqgU3fsJaoj"
+    organization = "wmax641"
 
     workspaces {
       name = "cloud3"
