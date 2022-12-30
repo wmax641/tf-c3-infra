@@ -201,12 +201,12 @@ resource "aws_network_acl" "nacl3" {
     to_port    = 0
   }
   egress {
-    protocol   = "-1"
-    rule_no    = 301
-    action     = "allow"
+    protocol        = "-1"
+    rule_no         = 301
+    action          = "allow"
     ipv6_cidr_block = cidrsubnet(aws_vpc.main.ipv6_cidr_block, 8, 0)
-    from_port  = 0
-    to_port    = 0
+    from_port       = 0
+    to_port         = 0
   }
   ingress {
     protocol   = "-1"
@@ -233,12 +233,12 @@ resource "aws_network_acl" "nacl3" {
     to_port    = 0
   }
   ingress {
-    protocol   = "-1"
-    rule_no    = 301
-    action     = "allow"
+    protocol        = "-1"
+    rule_no         = 301
+    action          = "allow"
     ipv6_cidr_block = cidrsubnet(aws_vpc.main.ipv6_cidr_block, 8, 0)
-    from_port  = 0
-    to_port    = 0
+    from_port       = 0
+    to_port         = 0
   }
 
   tags = merge({ "Name" = "${var.base_name}-nacl3" }, var.common_tags)
