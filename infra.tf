@@ -243,6 +243,7 @@ resource "aws_network_acl" "nacl3" {
 
   tags = merge({ "Name" = "${var.base_name}-nacl3" }, var.common_tags)
 }
+
 resource "aws_network_acl_association" "subnet0" {
   network_acl_id = aws_network_acl.nacl0.id
   subnet_id      = aws_subnet.subnet0.id
