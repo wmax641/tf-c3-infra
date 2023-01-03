@@ -19,6 +19,14 @@ resource "aws_security_group" "jump" {
     cidr_blocks      = ["10.13.37.0/24"]
     ipv6_cidr_blocks = ["2406:da1c:c99:9100::/56"]
   }
+  ingress {
+    description      = "wireguard"
+    from_port        = 31337
+    to_port          = 31337
+    protocol         = "udp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
   egress {
     description      = "outbound ssh to internal network"
