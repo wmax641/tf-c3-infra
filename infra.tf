@@ -1,6 +1,8 @@
 resource "aws_vpc" "main" {
   cidr_block                       = "10.13.37.0/24"
   assign_generated_ipv6_cidr_block = true
+  enable_dns_hostnames             = true
+  enable_dns_support               = true
   tags                             = merge({ "Name" = var.base_name }, var.common_tags)
 }
 
