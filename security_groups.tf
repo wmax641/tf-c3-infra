@@ -12,14 +12,6 @@ resource "aws_security_group" "jump" {
     ipv6_cidr_blocks = ["::/0"]
   }
   ingress {
-    description      = "proxy service"
-    from_port        = 3128
-    to_port          = 3128
-    protocol         = "tcp"
-    cidr_blocks      = ["10.13.37.0/24"]
-    ipv6_cidr_blocks = ["2406:da1c:c99:9100::/56"]
-  }
-  ingress {
     description      = "wireguard"
     from_port        = 31337
     to_port          = 31337
@@ -28,14 +20,6 @@ resource "aws_security_group" "jump" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  egress {
-    description      = "outbound ssh to internal network"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["10.13.37.0/24"]
-    ipv6_cidr_blocks = ["2406:da1c:c99:9100::/56"]
-  }
   egress {
     description      = "outbound to internet"
     from_port        = 0
@@ -46,6 +30,23 @@ resource "aws_security_group" "jump" {
   }
 
   tags = merge({ "Name" = "jump" }, var.common_tags)
+}
+
+resource "aws_security_group" "proxy" {
+  name        = "proxy"
+  description = "proxy services"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "proxy service inbound"
+    from_port        = 3128
+    to_port          = 3128
+    protocol         = "tcp"
+    cidr_blocks      = ["10.13.37.0/24"]
+    ipv6_cidr_blocks = ["2406:da1c:c99:9100::/56"]
+  }
+
+  tags = merge({ "Name" = "proxy" }, var.common_tags)
 }
 
 resource "aws_security_group" "sharedServices" {
@@ -62,12 +63,36 @@ resource "aws_security_group" "sharedServices" {
   }
 
   egress {
-    description     = "http proxy to jump host"
+    description     = "http proxy to whatever's in the proxy SG"
     from_port       = 3128
     to_port         = 3128
+    protocol        = "tcp"
+    security_groups = [aws_security_group.proxy.id]
+  }
+
+  tags = merge({ "Name" = "sharedServices" }, var.common_tags)
+}
+
+resource "aws_security_group" "email" {
+  name        = "email services"
+  description = "email services"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "smtp inbound 25"
+    from_port        = 25
+    to_port          = 25
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  ingress {
+    description     = "imap inbound 25 from jump/vpn"
+    from_port       = 993
+    to_port         = 993
     protocol        = "tcp"
     security_groups = [aws_security_group.jump.id]
   }
 
-  tags = merge({ "Name" = "sharedServices" }, var.common_tags)
+  tags = merge({ "Name" = "email" }, var.common_tags)
 }
