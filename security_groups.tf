@@ -20,15 +20,6 @@ resource "aws_security_group" "jump" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  egress {
-    description      = "outbound to internet"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags = merge({ "Name" = "jump" }, var.common_tags)
 }
 
@@ -44,6 +35,14 @@ resource "aws_security_group" "proxy" {
     protocol         = "tcp"
     cidr_blocks      = ["10.13.37.0/24"]
     ipv6_cidr_blocks = ["2406:da1c:c99:9100::/56"]
+  }
+  egress {
+    description      = "outbound to internet"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   tags = merge({ "Name" = "proxy" }, var.common_tags)
@@ -63,7 +62,7 @@ resource "aws_security_group" "sharedServices" {
   }
 
   egress {
-    description     = "http proxy to whatever's in the proxy SG"
+    description     = "http proxy to the proxy SG"
     from_port       = 3128
     to_port         = 3128
     protocol        = "tcp"
@@ -92,6 +91,30 @@ resource "aws_security_group" "email" {
     to_port         = 993
     protocol        = "tcp"
     security_groups = [aws_security_group.jump.id]
+  }
+  egress {
+    description      = "smtp outbound 25"
+    from_port        = 25
+    to_port          = 25
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  egress {
+    description      = "smtp outbound 465"
+    from_port        = 465
+    to_port          = 465
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  egress {
+    description      = "smtp outbound 587"
+    from_port        = 587
+    to_port          = 587
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   tags = merge({ "Name" = "email" }, var.common_tags)
