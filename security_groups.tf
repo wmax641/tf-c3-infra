@@ -3,14 +3,14 @@ resource "aws_security_group" "jump" {
   description = "jump host SG"
   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    description      = "inbound ssh"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
+  #ingress {
+  #  description      = "inbound ssh"
+  #  from_port        = 22
+  #  to_port          = 22
+  #  protocol         = "tcp"
+  #  cidr_blocks      = ["0.0.0.0/0"]
+  #  ipv6_cidr_blocks = ["::/0"]
+  #}
   ingress {
     description      = "wireguard"
     from_port        = 31337
