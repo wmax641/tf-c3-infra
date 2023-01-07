@@ -92,6 +92,13 @@ resource "aws_security_group" "email" {
     protocol        = "tcp"
     security_groups = [aws_security_group.jump.id]
   }
+  ingress {
+    description     = "imap inbound 1337 from jump/vpn"
+    from_port       = 1337
+    to_port         = 1337
+    protocol        = "tcp"
+    security_groups = [aws_security_group.jump.id]
+  }
   egress {
     description      = "smtp outbound 25"
     from_port        = 25
