@@ -126,3 +126,34 @@ resource "aws_security_group" "email" {
 
   tags = merge({ "Name" = "email" }, var.common_tags)
 }
+
+resource "aws_security_group" "dns" {
+  name        = "dns services"
+  description = "dns services"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description      = "dns inbound udp"
+    from_port        = 53
+    to_port          = 53
+    protocol         = "udp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  ingress {
+    description      = "dns inbound tcp"
+    from_port        = 53
+    to_port          = 53
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  egress {
+    description      = "dns zone transfer"
+    from_port        = 53
+    to_port          = 53
+    protocol         = "udp"
+    security_groups = [aws_security_group.jump.id]
+  }
+  tags = merge({ "Name" = "dns" }, var.common_tags)
+}
