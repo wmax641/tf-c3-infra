@@ -149,10 +149,10 @@ resource "aws_security_group" "dns" {
     ipv6_cidr_blocks = ["::/0"]
   }
   egress {
-    description      = "dns zone transfer"
-    from_port        = 53
-    to_port          = 53
-    protocol         = "udp"
+    description     = "dns zone transfer"
+    from_port       = 53
+    to_port         = 53
+    protocol        = "udp"
     security_groups = [aws_security_group.jump.id]
   }
   tags = merge({ "Name" = "dns" }, var.common_tags)
