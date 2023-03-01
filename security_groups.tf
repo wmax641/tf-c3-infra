@@ -155,5 +155,12 @@ resource "aws_security_group" "dns" {
     protocol        = "udp"
     security_groups = [aws_security_group.jump.id]
   }
+  egress {
+    description     = "dns zone transfer"
+    from_port       = 53
+    to_port         = 53
+    protocol        = "tcp"
+    security_groups = [aws_security_group.jump.id]
+  }
   tags = merge({ "Name" = "dns" }, var.common_tags)
 }
